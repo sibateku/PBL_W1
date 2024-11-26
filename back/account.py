@@ -1,4 +1,5 @@
 import sqlite3
+import os
 
 ### アカウントデータベースを扱うpythonコード
 ### これをimportしてサーバープログラムに使用する
@@ -6,7 +7,11 @@ import sqlite3
 # account.db の位置
 account_db = "sql/account.db"
 
-# アカウントを作成する関数
+# アカウントに紐づいたデータベースの位置
+userdata_db = "sql/userdata/"
+
+
+
 def account_create(id: str, pw: str) -> bool:
     try:
         conn = sqlite3.connect(account_db)
@@ -19,6 +24,59 @@ def account_create(id: str, pw: str) -> bool:
         # 新しいアカウントを登録
         cursor.execute("INSERT INTO accounts (id, pw) VALUES (?, ?)", (id, pw))
         conn.commit()
+
+        # アカウントに紐づいたデータベース(id.db)を作成
+        with sqlite3.connect(f"{userdata_db}{id}.db") as user_conn:
+            user_cursor = user_conn.cursor()
+
+            # カテゴリーテーブルを作る
+            # categories
+            #   - id (AUTO INCREMENT)
+            #   - name (NOT NULL)
+            user_cursor.execute("""
+            CREATE TABLE IF NOT EXISTS categories (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL
+            )
+            """)
+
+            # スケジュールテーブルを作る
+            # schedules
+            #   - id (AUTO INCREMENT)
+            #   - title (NOT NULL): 予定のタイトル
+            #   - year (NOT NULL): 年
+            #   - month (NOT NULL): 月
+            #   - day (NOT NULL): 日
+            #   - budget: 予算
+            #   - spent: 実際に使った金額
+            #   - category: カテゴリーid
+            user_cursor.execute("""
+            CREATE TABLE IF NOT EXISTS schedules (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            year INTEGER NOT NULL,
+            month INTEGER NOT NULL,
+            day INTEGER NOT NULL,
+            budget INTEGER,
+            spent INTEGER,
+            category INTEGER
+            )
+            """)
+
+            # テンプレートテーブルを作る
+            # templates
+            #   - id (AUTO INCREMENT)
+            #   - tytle (NOT NULL): テンプレートのタイトル
+            #   - budget (NOT NULL): 予算
+            user_cursor.execute("""
+            CREATE TABLE IF NOT EXISTS templates (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            budget INTEGER NOT NULL
+            )
+            """)
+            user_conn.commit()
+
         print(f"Account for ID {id} created successfully.")
         return True  # 登録成功
     except Exception as e:
@@ -57,6 +115,13 @@ def account_delete(id: str) -> bool:
         # アカウントを削除
         cursor.execute("DELETE FROM accounts WHERE id = ?", (id,))
         conn.commit()
+
+        # アカウントに紐づいたデータベースを削除
+        user_db_path = f"{userdata_db}{id}.db"
+        if os.path.exists(user_db_path):
+            os.remove(user_db_path)
+            print(f"Database for ID {id} has been deleted.")
+
         print(f"ID {id} has been deleted.")
         return True  # 削除成功
     except Exception as e:
