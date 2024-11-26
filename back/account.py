@@ -13,6 +13,21 @@ userdata_db = "sql/userdata/"
 
 
 def account_create(id: str, pw: str) -> bool:
+    """
+    指定されたIDとパスワードで新しいアカウントを作成します。
+    この関数は以下の手順を実行します:
+    1. アカウントデータベース(sql/account.db)に接続します。
+    2. 提供されたIDがデータベースに既に存在するか確認します。
+    3. IDが存在しない場合、新しいアカウントをデータベースに挿入します。
+    4. ユーザー専用データベース(sql/userdata/[アカウント名].db)を作成します。
+    5. ユーザー専用データベースに必要なテーブル（categories, schedules, templates）を作成します。
+    Args:
+        id (str): 新しいアカウントのID。
+        pw (str): 新しいアカウントのパスワード。
+    Returns:
+        bool: アカウントが正常に作成された場合はTrue、そうでない場合はFalse。
+    """
+
     try:
         conn = sqlite3.connect(account_db)
         cursor = conn.cursor()
@@ -85,8 +100,18 @@ def account_create(id: str, pw: str) -> bool:
     finally:
         conn.close()
 
-# アカウント認証を行う関数
+
+
 def account_auth(id: str, pw: str) -> bool:
+    """
+    指定されたIDとパスワードを使用してアカウント認証を行います。
+    Args:
+        id (str): 認証するアカウントのID。
+        pw (str): 認証するアカウントのパスワード。
+    Returns:
+        bool: 認証が成功した場合はTrue、失敗した場合はFalseを返します。
+    """
+
     try:
         conn = sqlite3.connect(account_db)
         cursor = conn.cursor()
@@ -102,8 +127,49 @@ def account_auth(id: str, pw: str) -> bool:
     finally:
         conn.close()
 
-# アカウントを削除する関数
+
+
+def account_isExists(id: str) -> bool:
+    """
+    指定されたIDがアカウントデータベースに存在するかを確認します。
+    Args:
+        id (str): 確認するアカウントのID。
+    Returns:
+        bool: IDが存在する場合はTrue、存在しない場合はFalseを返します。
+                エラーが発生した場合もFalseを返します。
+    Raises:
+        Exception: データベース接続やクエリ実行中に発生したエラー。
+    """
+
+    try:
+        conn = sqlite3.connect(account_db)
+        cursor = conn.cursor()
+        # IDが存在するか確認
+        cursor.execute("SELECT * FROM accounts WHERE id = ?", (id,))
+        if cursor.fetchone():
+            print(f"ID {id} exists.")
+            return True  # IDが存在する場合
+        print(f"ID {id} does not exist.")
+        return False  # IDが存在しない場合
+    except Exception as e:
+        print(f"Error: {e}")
+        return False  # エラーが発生した場合
+    finally:
+        conn.close()
+
+
+
 def account_delete(id: str) -> bool:
+    """
+    指定されたIDのアカウントを削除します。
+    この関数は、指定されたIDのアカウントをデータベースから削除し、
+    そのアカウントに関連付けられたユーザーデータベースも削除します。
+    Args:
+        id (str): 削除するアカウントのID。
+    Returns:
+        bool: アカウントの削除に成功した場合はTrue、失敗した場合はFalseを返します。
+    """
+    
     try:
         conn = sqlite3.connect(account_db)
         cursor = conn.cursor()
@@ -133,7 +199,7 @@ def account_delete(id: str) -> bool:
 
 
 if __name__ == "__main__":
-    # データベースを作る
+    # なければデータベースを作る
     def init_db():
         try:
             conn = sqlite3.connect(account_db)
