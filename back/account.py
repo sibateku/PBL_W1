@@ -81,7 +81,7 @@ def account_create(id: str, pw: str) -> bool:
             # テンプレートテーブルを作る
             # templates
             #   - id (AUTO INCREMENT)
-            #   - tytle (NOT NULL): テンプレートのタイトル
+            #   - title (NOT NULL): テンプレートのタイトル
             #   - budget (NOT NULL): 予算
             user_cursor.execute("""
             CREATE TABLE IF NOT EXISTS templates (
