@@ -27,3 +27,7 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+
+# Python用無視するファイルの設定
+__pycache__/
