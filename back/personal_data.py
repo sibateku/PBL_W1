@@ -25,13 +25,14 @@ def create_personal_db(account_id):
         cursor = conn.cursor()
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS personal_data (
-                id       INTEGER,
-                date     TEXT,
-                name     TEXT,
-                est      INTEGER,
-                act      INTEGER,
+                id       INTEGER PRIMARY KEY AUTOINCREMENT,
+                year     INTEGER,
+                month    INTEGER,
+                day      INTEGER,
+                title    TEXT,
+                budget   INTEGER,
+                spent    INTEGER,
                 category TEXT,
-                PRIMARY KEY (id)
             )
         """)
         conn.commit()
@@ -55,17 +56,17 @@ def list_personal_data(account_id):
     finally:
         conn.close()
 
-def add_data(account_id, data_id, date, name, est, category):
+def add_data(account_id, year, month, day, title, budget, category):
     personal_data = f"sql/{account_id}.db"
     try:
         conn = sqlite3.connect(personal_data)
         cursor = conn.cursor()
         cursor.execute("""
-            INSERT INTO personal_data(id, date, name, est, act, category)
-            VALUES(?, ?, ?, ?, ?, ?)
-            """, (data_id, date, name, est, 0, category))
+            INSERT INTO personal_data(year, month, day, title, budget, spent, category)
+            VALUES(?, ?, ?, ?, ?, ?, ?)
+            """, (year, month, day, title, budget, 0, category))
         conn.commit()
-        print(f"Data '{data_id}' added successfully.")
+        print(f"Data added successfully.")
     except Exception as e:
         print(f"Error adding data: {e}")
     finally:
@@ -77,6 +78,6 @@ if __name__ == "__main__":
 
     if auth_user(input_account_id, input_account_pw):
         create_personal_db(input_account_id)
-        add_data(input_account_id, 1, "2024/11/26", "作成", 100, "001")
-        add_data(input_account_id, 2, "2024/11/27", "確認", 200, "001")
+        add_data(input_account_id, 2024, 11, 26, "作成", 100, "001")
+        add_data(input_account_id, 2024, 11, 27, "確認", 200, "001")
         list_personal_data(input_account_id)
