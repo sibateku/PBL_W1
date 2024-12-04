@@ -237,5 +237,5 @@ if __name__ == "__main__":
     account_create("taro", "tar0pas!")
     list_accounts()
 
-    account_delete("taro")
+    # account_delete("taro")
     list_accounts()
