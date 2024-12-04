@@ -18,40 +18,53 @@ def auth_user(id, pw):
     finally:
         conn.close()
 
-if __name__ == "__main__":
-    def create_personal_db(account_id):
-        personal_data = f"sql/userdata/{account_id}.db"
-        try:
-            conn = sqlite3.connect(personal_data)
-            cursor = conn.cursor()
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS personal_data (
-                    id       INTEGER PRIMARY KEY AUTOINCREMENT,
-                    year     INTEGER,
-                    month    INTEGER,
-                    day      INTEGER,
-                    title    TEXT,
-                    budget   INTEGER,
-                    spent    INTEGER,
-                    category INTEGER
-                )
-            """)
-            conn.commit()
-            print(f"Database '{personal_data}' created successfully.")
-        except Exception as e:
-            print(f"Error creating database: {e}")
-        finally:
-            conn.close()
+def create_personal_db(account_id):
+    personal_data = f"sql/userdata/{account_id}.db"
+    try:
+        conn = sqlite3.connect(personal_data)
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS personal_data (
+                id       INTEGER PRIMARY KEY AUTOINCREMENT,
+                year     INTEGER,
+                month    INTEGER,
+                day      INTEGER,
+                title    TEXT,
+                budget   INTEGER,
+                spent    INTEGER,
+                category INTEGER
+            )
+        """)
+        conn.commit()
+        print(f"Database '{personal_data}' created successfully.")
+    except Exception as e:
+        print(f"Error creating database: {e}")
+    finally:
+        conn.close()
 
 def list_personal_data(account_id):
     personal_data = f"sql/userdata/{account_id}.db"
     try:
         conn = sqlite3.connect(personal_data)
         cursor = conn.cursor()
-        cursor.execute("SELECT title FROM personal_data")
+        cursor.execute("SELECT title FROM schedules")
         titles = cursor.fetchall()
         for title in titles:
             print(f"ID: {title[0]}")
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        conn.close()
+
+def get_schedule_between(account_id, year, month):
+    personal_data = f"sql/userdata/{account_id}.db"
+    try:
+        conn = sqlite3.connect(personal_data)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM schedules WHERE year = ? AND month = ?", (year, month))
+        schedules = cursor.fetchall()
+        for schedule in schedules:
+            print(schedule)
     except Exception as e:
         print(f"Error: {e}")
     finally:
@@ -63,7 +76,7 @@ def add_data(account_id, year, month, day, title, budget, category):
         conn = sqlite3.connect(personal_data)
         cursor = conn.cursor()
         cursor.execute("""
-            INSERT INTO personal_data(year, month, day, title, budget, spent, category)
+            INSERT INTO schedules(year, month, day, title, budget, spent, category)
             VALUES(?, ?, ?, ?, ?, ?, ?)
             """, (year, month, day, title, budget, 0, category))
         conn.commit()
@@ -78,7 +91,7 @@ def delete_data(account_id, data_id):
     try:
         conn = sqlite3.connect(personal_data)
         cursor = conn.cursor()
-        cursor.execute("DELETE FROM personal_data WHERE id = ?", (data_id,))
+        cursor.execute("DELETE FROM schedules WHERE id = ?", (data_id,))
         conn.commit()
         if cursor.rowcount > 0:
             print(f"Record with ID {data_id} deleted successfully.")
