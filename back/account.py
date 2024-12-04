@@ -50,7 +50,7 @@ def account_create(id: str, pw: str) -> bool:
             #   - name (NOT NULL)
             user_cursor.execute("""
             CREATE TABLE IF NOT EXISTS categories (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id   INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL
             )
             """)
@@ -67,13 +67,13 @@ def account_create(id: str, pw: str) -> bool:
             #   - category: カテゴリーid
             user_cursor.execute("""
             CREATE TABLE IF NOT EXISTS schedules (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            year INTEGER NOT NULL,
-            month INTEGER NOT NULL,
-            day INTEGER NOT NULL,
-            budget INTEGER,
-            spent INTEGER,
+            id       INTEGER PRIMARY KEY AUTOINCREMENT,
+            title    TEXT NOT NULL,
+            year     INTEGER NOT NULL,
+            month    INTEGER NOT NULL,
+            day      INTEGER NOT NULL,
+            budget   INTEGER,
+            spent    INTEGER,
             category INTEGER
             )
             """)
@@ -85,8 +85,8 @@ def account_create(id: str, pw: str) -> bool:
             #   - budget (NOT NULL): 予算
             user_cursor.execute("""
             CREATE TABLE IF NOT EXISTS templates (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
+            id     INTEGER PRIMARY KEY AUTOINCREMENT,
+            title  TEXT NOT NULL,
             budget INTEGER NOT NULL
             )
             """)
