@@ -85,10 +85,8 @@ def get_category_fromName(account_id: str, category_name: str) -> int:
 
 if __name__ == "__main__":
     # テスト
-    """
     account_id = "taro"
     template_name = "test_template"
-    print(set_template(account_id, template_name))
-    print(get_templates(account_id))
-    print(get_template_fromId(account_id, 1))
-    """
+    print(set_category(account_id, template_name))
+    print(get_category(account_id))
+    print(get_category_fromId(account_id, 1))
