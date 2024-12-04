@@ -24,7 +24,7 @@ def set_category(account_id: str, category_name: str) -> bool:
     finally:
         conn.close()
 
-def get_category(account_id: str) -> list:
+def get_categories(account_id: str) -> list:
     """
     指定されたSQLiteデータベースからユーザーのテンプレートを取得します。
     Args:
@@ -88,5 +88,5 @@ if __name__ == "__main__":
     account_id = "taro"
     template_name = "test_template"
     print(set_category(account_id, template_name))
-    print(get_category(account_id))
+    print(get_categories(account_id))
     print(get_category_fromId(account_id, 1))
