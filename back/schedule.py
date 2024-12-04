@@ -24,8 +24,7 @@ def get_schedule_between(account_id, year, month):
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM schedules WHERE year = ? AND month = ?", (year, month))
         schedules = cursor.fetchall()
-        for schedule in schedules:
-            print(schedule)
+        return schedules
     except Exception as e:
         print(f"Error: {e}")
     finally:
