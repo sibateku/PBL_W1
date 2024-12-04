@@ -4,14 +4,6 @@ import sqlite3
 userdata_db = "sql/userdata/"
 
 def set_category(account_id: str, category_name: str) -> bool:
-    """
-    指定されたSQLiteデータベースにテンプレートを追加します。
-    Args:
-        account_id (str): アカウントID。
-        template_name (str): テンプレート名。
-    Returns:
-        bool: テンプレートの追加に成功した場合はTrue、失敗した場合はFalseを返します。
-    """
     try:
         conn = sqlite3.connect(f"{userdata_db}{account_id}.db")
         cursor = conn.cursor()
@@ -25,13 +17,6 @@ def set_category(account_id: str, category_name: str) -> bool:
         conn.close()
 
 def get_categories(account_id: str) -> list:
-    """
-    指定されたSQLiteデータベースからユーザーのテンプレートを取得します。
-    Args:
-        account_id (str): アカウントID。
-    Returns:
-        list: テンプレートのリスト
-    """
     try:
         conn = sqlite3.connect(f"{userdata_db}{account_id}.db")
         cursor = conn.cursor()
@@ -45,14 +30,6 @@ def get_categories(account_id: str) -> list:
         conn.close()
 
 def get_category_fromId(account_id: str, category_id: int) -> str:
-    """
-    指定されたSQLiteデータベースからテンプレートを取得します。
-    Args:
-        account_id (str): アカウントID。
-        template_id (int): テンプレートID。
-    Returns:
-        str: テンプレートの名前
-    """
     try:
         conn = sqlite3.connect(f"{userdata_db}{account_id}.db")
         cursor = conn.cursor()
@@ -67,9 +44,6 @@ def get_category_fromId(account_id: str, category_id: int) -> str:
         conn.close()
 
 def get_category_fromName(account_id: str, category_name: str) -> int:
-    """
-    名前からテンプレートのIDを取得
-    """
     try:
         conn = sqlite3.connect(f"{userdata_db}{account_id}.db")
         cursor = conn.cursor()

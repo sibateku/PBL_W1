@@ -3,45 +3,6 @@ import sqlite3
 
 account_db = "sql/account.db"
 
-def auth_user(id, pw):
-    try:
-        conn = sqlite3.connect(account_db)
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM accounts WHERE id = ? AND pw = ?", (id, pw))
-        if cursor.fetchone():
-            print(f"ID {id} authenticated successfully.")
-            return True # 認証成功
-        else: return False # 認証失敗
-    except Exception as e:
-        print(f"Error: {e}")
-        return False
-    finally:
-        conn.close()
-
-def create_personal_db(account_id):
-    personal_data = f"sql/userdata/{account_id}.db"
-    try:
-        conn = sqlite3.connect(personal_data)
-        cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS personal_data (
-                id       INTEGER PRIMARY KEY AUTOINCREMENT,
-                year     INTEGER,
-                month    INTEGER,
-                day      INTEGER,
-                title    TEXT,
-                budget   INTEGER,
-                spent    INTEGER,
-                category INTEGER
-            )
-        """)
-        conn.commit()
-        print(f"Database '{personal_data}' created successfully.")
-    except Exception as e:
-        print(f"Error creating database: {e}")
-    finally:
-        conn.close()
-
 def list_personal_data(account_id):
     personal_data = f"sql/userdata/{account_id}.db"
     try:
@@ -106,8 +67,8 @@ if __name__ == "__main__":
     input_account_id = "taro"
     input_account_pw = "tar0pas!"
 
-    if auth_user(input_account_id, input_account_pw):
-        create_personal_db(input_account_id)
+    from account import account_auth
+    if account_auth(input_account_id, input_account_pw):
         add_data(input_account_id, 2024, 11, 26, "作成", 100, 1)
         add_data(input_account_id, 2024, 11, 27, "確認", 200, 1)
         list_personal_data(input_account_id)
