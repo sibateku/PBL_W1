@@ -1,5 +1,35 @@
 # coding: utf-8
 
+# flask HTTP requests (example)
+
+# アカウント作成 (アカウントid, password指定)
+# http://127.0.0.1:5000/account?req=create&id=jiro&password=jir0pas!
+# アカウント削除 (アカウントid指定)
+# http://127.0.0.1:5000/account?req=delete&id=jiro
+# アカウント認証 (アカウントid, password指定)
+# http://127.0.0.1:5000/account?req=auth&id=jiro&password=jir0pas!
+
+# スケジュール取得 (アカウントid, year, month指定)
+# http://127.0.0.1:5000/schedule?req=get&id=jiro&year=2024&month=11
+# スケジュール追加 (アカウントid, year, month, day, title, *budget, *spent, *category指定)
+#   budget, spent, category の指定がなければそれぞれ 0, 0, 0 が入る
+#   (なお，category の 0 はその他を表す)
+# http://127.0.0.1:5000/schedule?req=set&id=jiro&year=2024&month=11&day=26&title=ご飯
+# スケジュール削除 (アカウントid, スケジュールid指定)
+# http://127.0.0.1:5000/schedule?req=delete&id=jiro&data_id=1
+
+# テンプレートすべて取得 (アカウントid指定)
+# http://127.0.0.1:5000/template?req=get&id=jiro
+# テンプレート追加 (アカウントid, title, budget指定)
+# http://127.0.0.1:5000/template?req=set&id=jiro&title=ご飯&budget=1000
+
+# カテゴリ取得 (アカウントid, カテゴリid指定)
+# http://127.0.0.1:5000/category?req=get&id=jiro&category_id=1
+# カテゴリすべて取得 (アカウントid指定)
+# http://127.0.0.1:5000/category?req=getall&id=jiro
+# カテゴリ追加 (アカウントid, title指定)
+# http://127.0.0.1:5000/category?req=set&id=jiro&title=食費
+
 from flask import Flask
 import json
 
@@ -12,12 +42,37 @@ app = Flask(__name__)
 def hello_world():
     return 'Test!'
 
+def makeJson(data) -> str:
+    """
+    様々な型のデータをjsonに変換して返す
+    引数:
+        data: 変換するデータ
+            [dict]: json形式に変換
+            [list]: json形式に変換
+            [str]: {"res": data} の形式に変換
+            [bool]: {"res": true/false} の形式に変換
+    戻り値:
+        str: json形式の文字列
+    """
+    if type(data) == dict:
+        return json.dumps(data)
+    elif type(data) == list:
+        return json.dumps(data)
+    elif type(data) == str:
+        data = {"res": data}
+        return data
+    elif type(data) == bool:
+        data = {"res": str(data).lower()}
+        return data
+    return makeJson('makeJson: Invalid data type')
+
+
 
 # テンプレートのリクエストを処理
 @app.route('/account', methods=['GET'])
 def account_request():
     """
-    'req'パラメータに基づいてアカウント関連のリクエストを処理します
+    'req'パラメータに基づいてアカウント関連のリクエストを処理
     クエリパラメータ:
         req (str): リクエストの種類。'create', 'delete', 'auth'のいずれか
         id (str): ユーザーID
@@ -34,14 +89,22 @@ def account_request():
     print(user_id)
     print(password)
 
-    if req == 'create':
-        return account.account_create(user_id, password)
+    if user_id is None or user_id == '':
+        return makeJson('id: Invalid user_id: empty')
+    if password is None or password == '':
+        return makeJson('password: Invalid password: empty')
+
+    if req is None or req == '':
+        return makeJson('req: Invalid request: empty')
+    elif req == 'create':
+        return makeJson(account.account_create(user_id, password))
     elif req == 'delete':
-        return account.account_delete(user_id)
+        return makeJson(account.account_delete(user_id))
     elif req == 'auth':
-        return str(account.account_auth(user_id, password))
+        return makeJson(account.account_auth(user_id, password))
     else:
-        return 'Invalid request'
+        return makeJson('req: Invalid request')
+
 
 
 # スケジュールのリクエストを処理
@@ -69,62 +132,143 @@ def schedule_request():
     req = request.args.get('req')
     user_id = request.args.get('id')
 
-    if account.account_isExists(user_id) == False:
-        return 'Account not found'
+    print(req)
+    print(user_id)
 
-    if req == 'get':
+    if user_id is None or user_id == '':
+        return makeJson('id: Invalid user_id: empty')
+
+    if account.account_isExists(user_id) == False:
+        return makeJson('id: Account not found')
+
+    if req is None or req == '':
+        return makeJson('req: Invalid request: empty')
+
+    elif req == 'getall':
+        return makeJson("getall is not implemented yet")
+
+    elif req == 'get':
         year = request.args.get('year')
         month = request.args.get('month')
-        
-        return schedule.get_schedule_between(user_id, year, month)
-    
+
+        if year is None or year == '':
+            return makeJson('year: Invalid year: empty')
+        if year.isdecimal() == False:
+            return makeJson('year: Invalid year: not decimal')
+        if not (1970 <= int(year) <= 3000):
+            return makeJson('year: Invalid year: out of range (1970-3000)')
+
+        if month is None or month == '':
+            return makeJson('month: Invalid month: empty')
+        if month.isdecimal() == False:
+            return makeJson('month: Invalid month: not decimal')
+        if not (0 <= int(month) <= 12):
+            return makeJson('month: Invalid month: out of range (0-12)')
+
+        return makeJson(schedule.get_schedule_between(user_id, year, month))
+
+    elif req == 'delete':
+        data_id = request.args.get('data_id')
+        if data_id is None or data_id == '':
+            return makeJson('data_id: Invalid data_id: empty')
+        return makeJson(schedule.delete_data(user_id, data_id))
+
     elif req == 'set':
         year = request.args.get('year')
         month = request.args.get('month')
         day = request.args.get('day')
         title = request.args.get('title')
-        budget = request.args.get('budget')
-        spent = request.args.get('spent')
-        category = request.args.get('category')
+        budget = request.args.get('budget') # Optional
+        spent = request.args.get('spent') # Optional
+        category = request.args.get('category') # Optional
+
+        if year is None or year == '':
+            return makeJson('year: Invalid year: empty')
+        if year.isdecimal() == False:
+            return makeJson('year: Invalid year: not decimal')
+        if not (1970 <= int(year) <= 3000):
+            return makeJson('year: Invalid year: out of range (1970-3000)')
+
+        if month is None or month == '':
+            return makeJson('month: Invalid month: empty')
+        if month.isdecimal() == False:
+            return makeJson('month: Invalid month: not decimal')
+        if not (0 <= int(month) <= 12):
+            return makeJson('month: Invalid month: out of range (0-12)')
+
+        if day is None or day == '':
+            return makeJson('day: Invalid day: empty')
+        if day.isdecimal() == False:
+            return makeJson('day: Invalid day: not decimal')
+        if not (1 <= int(day) <= 31):
+            return makeJson('day: Invalid day: out of range (1-31)')
+
+        if title is None or title == '':
+            return makeJson('title: Invalid title: empty')
+
+        if budget is None or budget == '':
+            budget = 0
+        if budget.isdecimal() == False:
+            return makeJson('budget: Invalid budget: not decimal')
+        if int(budget) < 0:
+            return makeJson('budget: Invalid budget: negative value')
         
-        return schedule.add_data(user_id, year, month, day, title, budget, spent, category)
+        if spent is None or spent == '':
+            spent = 0
+        if spent.isdecimal() == False:
+            return makeJson('spent: Invalid spent: not decimal')
+        if int(spent) < 0:
+            return makeJson('spent: Invalid spent: negative value')
+
+        if category is None or category == '':
+            category = 0 # その他
+        if category.isdecimal() == False:
+            return makeJson('category: Invalid category: not decimal')
+        if int(category) < 0:
+            return makeJson('category: Invalid category: negative value')
+
+        return makeJson(schedule.add_data(user_id, year, month, day, title, budget, spent, category))
 
     else:
-        return 'Invalid request'
+        return makeJson('Invalid request')
+
 
 
 # テンプレートのリクエストを処理
 @app.route('/template', methods=['GET'])
 def template_request():
     """
-    テンプレートリクエストを処理する関数。
-    リクエストの種類に応じて、テンプレートの取得または設定を行います。
+    テンプレートリクエストを処理する関数
+    リクエストの種類に応じて、テンプレートを取得または設定
     リクエストパラメータ:
-        req (str): リクエストの種類 ('get' または 'set')。
-        id (str): ユーザーID。
-        title (str): タイトル (オプション、'set' リクエストの場合必須)。
-        budget (str): 予算 (オプション)。
+        req (str): リクエストの種類 ('get' または 'set')
+        id (str): ユーザーID
+        title (str): タイトル ('set' リクエストの場合必須)
+        budget (str): 予算
     戻り値:
-        dict: テンプレート情報または設定結果。
+        str(json): テンプレート情報または設定結果
     """
 
     req = request.args.get('req')
     user_id = request.args.get('id')
-
-    if account.account_isExists(user_id) == False:
-        return 'Account not found'
-
-    if req == 'get':
-        return template.get_templates(user_id)
     
+    if user_id is None or user_id == '':
+        return makeJson('id: Invalid user_id: empty')
+    if account.account_isExists(user_id) == False:
+        return makeJson('id: Account not found')
+    
+    if req == 'get': # テンプレートすべて取得
+        return makeJson(template.get_templates(user_id))
     elif req == 'set':
         title = request.args.get('title')
         budget = request.args.get('budget')
-        
-        return template.set_template(user_id, title, budget)
-
+        if title is None or title == '':
+            return makeJson('title: Invalid title: empty')
+        if budget is None or budget == '':
+            return makeJson('budget: Invalid budget: empty')
+        return makeJson(template.set_template(user_id, title, budget))
     else:
-        return 'Invalid request'
+        return makeJson('Invalid request')
 
 
 
@@ -137,7 +281,7 @@ def category_request():
     リクエストパラメータ:
         req (str): リクエストの種類 ('get' または 'set')。
         id (str): ユーザーID。
-        title (str): タイトル (オプション、'set' リクエストの場合必須)。
+        title (str): タイトル ('set' リクエストの場合必須)。
     戻り値:
         dict: カテゴリ情報または設定結果。
     """
@@ -145,22 +289,25 @@ def category_request():
     req = request.args.get('req')
     user_id = request.args.get('id')
 
+    if user_id is None or user_id == '':
+        return makeJson('id: Invalid user_id: empty')
     if account.account_isExists(user_id) == False:
-        return 'Account not found'
+        return makeJson('id: Account not found')
 
     if req == 'get':
         category_id = request.args.get('category_id')
-        return category.get_category_fromId(user_id, category_id)
-    
+        if category_id is None or category_id == '':
+            return makeJson('category_id: Invalid category_id: empty')
+        return makeJson(category.get_category_fromId(user_id, category_id))
     elif req == 'getall':
-        return category.get_categories(user_id)
-    
+        return makeJson(category.get_categories(user_id))
     elif req == 'set':
         title = request.args.get('title')
-        return category.set_category(user_id, title)
-
+        if title is None or title == '':
+            return makeJson('title: Invalid title: empty')
+        return makeJson(category.set_category(user_id, title))
     else:
-        return 'Invalid request'
+        return makeJson('Invalid request')
 
 
 
