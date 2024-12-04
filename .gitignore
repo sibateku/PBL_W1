@@ -31,3 +31,6 @@ Temporary Items
 
 # Python用無視するファイルの設定
 __pycache__/
+
+# SQL用無視するファイルの設定
+*.db

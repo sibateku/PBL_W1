@@ -18,29 +18,30 @@ def auth_user(id, pw):
     finally:
         conn.close()
 
-def create_personal_db(account_id):
-    personal_data = f"sql/userdata/{account_id}.db"
-    try:
-        conn = sqlite3.connect(personal_data)
-        cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS personal_data (
-                id       INTEGER PRIMARY KEY AUTOINCREMENT,
-                year     INTEGER,
-                month    INTEGER,
-                day      INTEGER,
-                title    TEXT,
-                budget   INTEGER,
-                spent    INTEGER,
-                category INTEGER
-            )
-        """)
-        conn.commit()
-        print(f"Database '{personal_data}' created successfully.")
-    except Exception as e:
-        print(f"Error creating database: {e}")
-    finally:
-        conn.close()
+if __name__ == "__main__":
+    def create_personal_db(account_id):
+        personal_data = f"sql/userdata/{account_id}.db"
+        try:
+            conn = sqlite3.connect(personal_data)
+            cursor = conn.cursor()
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS personal_data (
+                    id       INTEGER PRIMARY KEY AUTOINCREMENT,
+                    year     INTEGER,
+                    month    INTEGER,
+                    day      INTEGER,
+                    title    TEXT,
+                    budget   INTEGER,
+                    spent    INTEGER,
+                    category INTEGER
+                )
+            """)
+            conn.commit()
+            print(f"Database '{personal_data}' created successfully.")
+        except Exception as e:
+            print(f"Error creating database: {e}")
+        finally:
+            conn.close()
 
 def list_personal_data(account_id):
     personal_data = f"sql/userdata/{account_id}.db"
