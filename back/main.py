@@ -91,16 +91,18 @@ def account_request():
 
     if user_id is None or user_id == '':
         return makeJson('id: Invalid user_id: empty')
-    if password is None or password == '':
-        return makeJson('password: Invalid password: empty')
 
     if req is None or req == '':
         return makeJson('req: Invalid request: empty')
     elif req == 'create':
+        if password is None or password == '':
+            return makeJson('password: Invalid password: empty')
         return makeJson(account.account_create(user_id, password))
     elif req == 'delete':
         return makeJson(account.account_delete(user_id))
     elif req == 'auth':
+        if password is None or password == '':
+            return makeJson('password: Invalid password: empty')
         return makeJson(account.account_auth(user_id, password))
     else:
         return makeJson('req: Invalid request')
