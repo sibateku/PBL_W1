@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スケジュール＆予算管理カレンダー</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="calendar">
+        <div class="calendar-header" id="calendar-header">2024年12月</div>
+        <div class="navigation">
+            <button id="prev-button">＜</button>
+            <button id="next-button">＞</button>
+        </div>
+        <div class="days">
+            <div>日</div>
+            <div>月</div>
+            <div>火</div>
+            <div>水</div>
+            <div>木</div>
+            <div>金</div>
+            <div>土</div>
+        </div>
+        <div class="dates" id="calendar-dates"></div>
+        <button class="add-button" id="add-button">＋</button>
+    </div>
+
+    <div class="modal" id="schedule-modal">
+        <div class="modal-header">新しい予定を追加</div>
+        <div id="selected-date">日付: <span id="date-display">選択してください</span></div>
+        <input type="date" id="input-date" placeholder="日付を選択">
+        <input type="text" id="schedule-title" placeholder="タイトルを入力">
+        <textarea id="schedule-details" placeholder="詳細を入力"></textarea>
+        <input type="number" id="schedule-budget" placeholder="予算を入力" min="0">
+        <button id="save-button">保存</button>
+        <button id="cancel-button">キャンセル</button>
+    </div>
+
+    <div class="view-modal" id="view-modal">
+        <div class="modal-header">スケジュール詳細</div>
+        <div id="view-schedule-date">日付: <span id="view-date-display"></span></div>
+        <div id="view-schedule-title">タイトル: <span id="view-title"></span></div>
+        <div id="view-schedule-details">詳細: <span id="view-details"></span></div>
+        <div id="view-schedule-budget">予算: <span id="view-budget"></span></div>
+        <button id="delete-schedule-button">削除</button> <!-- 削除ボタンを追加 -->
+        <button id="close-view-button">閉じる</button>
+    </div>
+    
+    <div class="overlay" id="overlay"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
