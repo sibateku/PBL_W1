@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>家計簿カレンダー</title>
+        <meta name="description" content="家計簿">
+        <meta name="viewport" content="width=device-width">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="js/script.js"></script>
+        <link href="css/index.css" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap" rel="stylesheet">    
+    </head>
+    <body>
+        <div class="container">
+            <div class="input-box">
+            <input type="number" id="expense-input" placeholder="支出の入力">
+                <div class="number-pad">
+                <button class="enter">Enter</button>
+                </div>
+            </div>
+        <div class="categories">
+            <input type="radio" id="category-food" name="category" value="食費" checked>
+            <label for="category-food">
+                <span class="color-box" style="background-color: yellow;"></span> 食費
+            </label>
+            
+            <input type="radio" id="category-misc" name="category" value="雑費">
+            <label for="category-misc">
+                <span class="color-box" style="background-color: pink;"></span> 雑費
+            </label>
+            
+            <input type="radio" id="category-living" name="category" value="生活費">
+            <label for="category-living">
+                <span class="color-box" style="background-color: lightblue;"></span> 生活費
+            </label>
+            
+            <input type="radio" id="category-unregistered1" name="category" value="無登録">
+            <label for="category-unregistered1">
+                <span class="color-box" style="background-color: lightgreen;"></span> 無登録
+            </label>
+            
+            <input type="radio" id="category-unregistered2" name="category" value="無登録">
+            <label for="category-unregistered2">
+                <span class="color-box" style="background-color: orange;"></span> 無登録
+            </label>
+
+            <input type="radio" id="category-other" name="category" value="その他">
+            <label for="category-other">
+                <span class="color-box" style="background-color: lightgray;"></span> その他
+            </label>
+        </div>
+    </div>
+
+    <div class="summary">
+        <div class="summary-item">
+            <p>1ヶ月の予算</p>
+            <p>10,000円</p>
+        </div>
+        <div class="summary-item">
+            <p>1ヶ月の支出</p>
+            <p>100,000円</p>
+        </div>
+        <div class="summary-item">
+            <p>差額</p>
+            <p class="difference">-90,000円</p>
+        </div>
+    </div>
+
+    <div class="charts">
+        <div class="chart">
+            <p>予算</p>
+            <div class="donut-chart" style="background: conic-gradient(pink 0% 100%, lightgray 0%);">
+                <p>雑費 100%</p>
+            </div>
+            <p>10,000円</p>
+        </div>
+        <div class="chart">
+            <p>支出</p>
+            <div class="donut-chart" style="background: conic-gradient(yellow 0% 100%, lightgray 0%);">
+                <p>食費 100%</p>
+            </div>
+            <p>100,000円</p>
+        </div>
+    </div>
+    </div>
+    </body>
+</html>
