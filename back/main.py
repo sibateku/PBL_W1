@@ -56,15 +56,15 @@ def makeJson(data) -> str:
         str: json形式の文字列
     """
     if type(data) == dict:
-        return json.dumps(data)
+        return json.dumps(data, indent=2, ensure_ascii=False)
     elif type(data) == list:
-        return json.dumps(data)
+        return json.dumps(data, indent=2, ensure_ascii=False)
     elif type(data) == str:
         data = {"res": data}
-        return data
+        return json.dumps(data, indent=2, ensure_ascii=False)
     elif type(data) == bool:
         data = {"res": str(data).lower()}
-        return data
+        return json.dumps(data, indent=2, ensure_ascii=False)
     return makeJson('makeJson: Invalid data type')
 
 
