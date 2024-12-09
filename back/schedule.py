@@ -4,14 +4,29 @@ import sqlite3
 account_db = "sql/account.db"
 
 def get_schedule_between(account_id: str, year: int, month: int) -> list[dict]:
-    # TODO あとで中身をdictに変更する
     personal_data = f"sql/userdata/{account_id}.db"
     try:
         conn = sqlite3.connect(personal_data)
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM schedules WHERE year = ? AND month = ?", (year, month))
         schedules = cursor.fetchall()
-        return schedules
+        for i in range(len(schedules)):
+            schedules[i] = {
+                "id": schedules[i][0],
+                "title": schedules[i][1],
+                "year": schedules[i][2],
+                "month": schedules[i][3],
+                "day": schedules[i][4],
+                "budget": schedules[i][5],
+                "spent": schedules[i][6],
+                "category": schedules[i][7]
+            }
+        out = {
+            "res": True,
+            "msg": f"Got monthly schedules of {year}/{month} successfully.",
+            "data": schedules
+        }
+        return out
     except Exception as e:
         print(f"Error: {e}")
         return []
