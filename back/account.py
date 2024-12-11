@@ -65,6 +65,7 @@ def account_create(id: str, pw: str) -> bool:
             #   - budget: 予算
             #   - spent: 実際に使った金額
             #   - category: カテゴリーid
+            #   - details: 詳細
             user_cursor.execute("""
             CREATE TABLE IF NOT EXISTS schedules (
             id       INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -74,7 +75,8 @@ def account_create(id: str, pw: str) -> bool:
             day      INTEGER NOT NULL,
             budget   INTEGER,
             spent    INTEGER,
-            category INTEGER
+            category INTEGER,
+            details  TEXT
             )
             """)
 
@@ -235,7 +237,4 @@ if __name__ == "__main__":
 
     account_create("sample", "sample00")
     account_create("taro", "tar0pas!")
-    list_accounts()
-
-    # account_delete("taro")
     list_accounts()

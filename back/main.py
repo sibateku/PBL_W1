@@ -39,7 +39,7 @@ from flask import request
 app = Flask(__name__)
 
 # ローカルファイルで実行するためのアクセス制限撤廃用
-LOCALTEST = False
+LOCALTEST = True
 if LOCALTEST:
     from flask_cors import CORS
     CORS(app)
@@ -64,6 +64,8 @@ def makeJson(data) -> str:
     if type(data) == dict:
         return json.dumps(data, indent=2, ensure_ascii=False)
     elif type(data) == list:
+        if len(list) == 0:
+            return makeJson('makeJson: Empty list')
         return json.dumps(data, indent=2, ensure_ascii=False)
     elif type(data) == str:
         data = {"res": data}
@@ -139,6 +141,7 @@ def schedule_request():
         budget (str): 予算 (オプション)。
         spent (str): 支出 (オプション)。
         category (str): カテゴリ (オプション)。
+        details (str): 詳細 (オプション)。
     戻り値:
         dict: スケジュール情報または設定結果。
     """
@@ -161,6 +164,34 @@ def schedule_request():
 
     elif req == 'getall':
         return makeJson("getall is not implemented yet")
+
+    elif req == 'getday':
+        year = str(request.args.get('year'))
+        month = str(request.args.get('month'))
+        day = str(request.args.get('day'))
+
+        if year == "None" or year == '':
+            return makeJson('year: Invalid year: empty')
+        if not year.isdecimal():
+            return makeJson('year: Invalid year: not decimal')
+        if not (1970 <= int(year) <= 3000):
+            return makeJson('year: Invalid year: out of range (1970-3000)')
+
+        if month == "None" or month == '':
+            return makeJson('month: Invalid month: empty')
+        if not month.isdecimal():
+            return makeJson('month: Invalid month: not decimal')
+        if not (0 <= int(month) <= 12):
+            return makeJson('month: Invalid month: out of range (0-12)')
+        
+        if day == "None" or day == '':
+            return makeJson('day: Invalid day: empty')
+        if not day.isdecimal():
+            return makeJson('day: Invalid day: not decimal')
+        if not (1 <= int(day) <= 31):
+            return makeJson('day: Invalid day: out of range (1-31)')
+        
+        return makeJson(schedule.get_schedule_fromDay(user_id, year, month, day))
 
     elif req == 'get':
         year = str(request.args.get('year'))
@@ -198,6 +229,7 @@ def schedule_request():
         budget = str(request.args.get('budget')) # Optional
         spent = str(request.args.get('spent')) # Optional
         category = str(request.args.get('category')) # Optional
+        details = str(request.args.get('details')) # Optional
 
         print(f"year: {year}")
         print(f"month: {month}")
@@ -206,6 +238,7 @@ def schedule_request():
         print(f"budget: {budget}")
         print(f"spent: {spent}")
         print(f"category: {category}")
+        print(f"details: {details}")
 
         if year == "None" or year == '':
             return makeJson('year: Invalid year: empty')
@@ -254,8 +287,11 @@ def schedule_request():
             return makeJson('category: Invalid category: not decimal')
         if int(category) < 0:
             return makeJson('category: Invalid category: negative value')
+        
+        if details == "None" or details == '':
+            details = ""
 
-        return makeJson(schedule.add_data(user_id, year, month, day, title, budget, spent, category))
+        return makeJson(schedule.add_data(user_id, year, month, day, title, budget, spent, category, details))
 
     else:
         return makeJson('Invalid request')
