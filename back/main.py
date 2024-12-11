@@ -69,7 +69,7 @@ def makeJson(data) -> str:
         data = {"res": data}
         return json.dumps(data, indent=2, ensure_ascii=False)
     elif type(data) == bool:
-        data = {"res": str(data).lower()}
+        data = {"res": data}
         return json.dumps(data, indent=2, ensure_ascii=False)
     return makeJson('makeJson: Invalid data type')
 
