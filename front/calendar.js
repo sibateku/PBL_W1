@@ -271,5 +271,102 @@ addButton.addEventListener("click", () => {
 // loadSchedulesFromSrv(); // データベースからスケジュールを取得
 renderCalendar(currentDate);
 
+const templateSelect = document.getElementById("template-select");
+const templateTitle = document.getElementById("edit-template-title");
+const templateDetails = document.getElementById("edit-template-details");
+const templateBudget = document.getElementById("edit-template-budget");
+const saveTemplateButton = document.getElementById("save-template-button");
+
+// テンプレートのデータ
+const templates = {
+    work: {
+        title: "仕事",
+        details: "仕事の予定です",
+        budget: "5000",
+    },
+    meeting: {
+        title: "会議",
+        details: "会議の予定です",
+        budget: "1000",
+    },
+    personal: {
+        title: "個人的な予定",
+        details: "個人的な予定です",
+        budget: "0",
+    },
+};
+
+// テンプレート選択後にフォームを編集可能にする
+templateSelect.addEventListener("change", (e) => {
+    const selectedTemplate = e.target.value;
+
+    if (selectedTemplate && templates[selectedTemplate]) {
+        // テンプレートに基づいたデータを編集フォームに表示
+        templateTitle.value = templates[selectedTemplate].title;
+        templateDetails.value = templates[selectedTemplate].details;
+        templateBudget.value = templates[selectedTemplate].budget;
+    } else {
+        // テンプレートを選択しなかった場合はフォームを空にする
+        templateTitle.value = "";
+        templateDetails.value = "";
+        templateBudget.value = "";
+    }
+});
+
+// テンプレートを保存する処理
+saveTemplateButton.addEventListener("click", () => {
+    const selectedTemplate = templateSelect.value;
+
+    if (selectedTemplate) {
+        // ユーザーが編集した内容でテンプレートを更新
+        templates[selectedTemplate] = {
+            title: templateTitle.value.trim(),
+            details: templateDetails.value.trim(),
+            budget: templateBudget.value.trim(),
+        };
+
+        alert(`${selectedTemplate} テンプレートが保存されました！`);
+
+        // 編集内容を反映させた後、再度テンプレート選択を空にしておく
+        templateSelect.value = "";
+        templateTitle.value = "";
+        templateDetails.value = "";
+        templateBudget.value = "";
+    } else {
+        alert("テンプレートを選択してください");
+    }
+});
+
+// 新しい予定を保存する際に、選択されたテンプレートを適用
+function saveSchedule() {
+    if (selectedDate) {
+        const title = scheduleTitle.value.trim();
+        const details = scheduleDetails.value.trim();
+        const budget = scheduleBudget.value.trim();
+
+        if (title && budget !== "") {
+            scheduleData[selectedDate] = {
+                title,
+                details,
+                budget: parseFloat(budget),
+            };
+
+            // テンプレート保存処理（オプション）
+            const selectedTemplate = templateSelect.value;
+            if (selectedTemplate && templates[selectedTemplate]) {
+                // 編集したテンプレートを適用した予定を保存する
+                console.log("選択されたテンプレート", templates[selectedTemplate]);
+            }
+
+            // スケジュールをデータベースに保存
+            srvSaveSchedule(title, details, budget, selectedDate); // サーバーに保存リクエスト
+
+            renderCalendar(currentDate); // カレンダーを再描画
+        }
+    }
+    closeModal();
+}
+
+
 
 
