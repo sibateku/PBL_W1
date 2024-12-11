@@ -65,6 +65,7 @@ def makeJson(data) -> str:
         return json.dumps(data, indent=2, ensure_ascii=False)
     elif type(data) == list:
         if len(list) == 0:
+            return makeJson('makeJson: Empty list')
         return json.dumps(data, indent=2, ensure_ascii=False)
     elif type(data) == str:
         data = {"res": data}
