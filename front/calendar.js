@@ -91,6 +91,7 @@ function closeViewModal() {
 function deleteSchedule() {
     if (selectedDate && scheduleData[selectedDate]) {
         delete scheduleData[selectedDate];
+        // srvDeleteSchedule(selectedDate); // データベースに削除リクエストを送信
         renderCalendar(currentDate); // 削除後にカレンダーを再描画
     }
     closeViewModal();
@@ -109,11 +110,140 @@ function saveSchedule() {
                 budget: parseFloat(budget),
             };
 
+            // srvSaveSchedule(title, details, budget, selectedDate); // データベースに保存リクエストを送信
             renderCalendar(currentDate);
         }
     }
     closeModal();
 }
+
+
+
+// ネットワークリクエストを送信する関数
+const url = 'http://localhost:5000/';
+const urlParams = new URLSearchParams(window.location.search);
+const id = urlParams.get('id');
+
+// 不具合のため全てコメントアウトしています
+
+function srvSaveSchedule(title, details, budget, date) {
+    // date is yyyy-mm-dd
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url + "schedule?req=set"
+            + "&id=" + id
+            + "&year=" + date.split('-')[0]
+            + "&month=" + date.split('-')[1]
+            + "&day=" + date.split('-')[2]
+            + "&title=" + title
+            + "&budget=" + budget
+            + "&details=" + details
+        );
+    xhr.send();
+    xhr.responseType = "json";
+    xhr.onload = () => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            const data = xhr.response;
+            if (data.res === true) {
+                alert('データベースにスケジュール登録完了');
+            }
+            else {
+                alert('データベースにスケジュール登録失敗');
+            }
+        } else {
+            alert(`Error: ${xhr.status}`);
+        }
+    };
+}
+
+function srvDeleteSchedule(date) {
+    // 1つの日付に1つのスケジュールしかない前提
+    var data_id = -1;
+    const xhrSearchId = new XMLHttpRequest();
+    xhrSearchId.open("GET", url + "schedule?req=getday"
+            + "&id=" + id
+            + "&year=" + date.split('-')[0]
+            + "&month=" + date.split('-')[1]
+            + "&day=" + date.split('-')[2]
+        );
+    xhrSearchId.send();
+    xhrSearchId.responseType = "json";
+    xhrSearchId.onload = () => {
+        if (xhrSearchId.readyState == 4 && xhrSearchId.status == 200) {
+            const data = xhrSearchId.response;
+            // dataはjsonのlist[dict]の形
+            if (data.length === 1) {
+                // 1つの日付に1つのスケジュールしかない場合
+                data_id = data[0].id;
+            } else {
+                alert('1つの日付に1つのスケジュールしかない前提でないため削除できません');
+            }
+        } else {
+            alert(`Error: ${xhrSearchId.status}`);
+        }
+    };
+
+    if (data_id === -1) {
+        alert('データid: -1, 削除できません');
+        return;
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url + "schedule?req=delete"
+            + "&id=" + id
+            + "&data_id=" + data_id
+        );
+    xhr.send();
+    xhr.responseType = "json";
+    xhr.onload = () => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            const data = xhr.response;
+            if (data.res === true) {
+                alert('データベースからスケジュール削除完了');
+            }
+            else {
+                alert('データベースからスケジュール削除失敗');
+            }
+        } else {
+            alert(`Error: ${xhr.status}`);
+        }
+    };
+}
+
+function srvGetSchedule(year, month) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url + "schedule?req=get"
+            + "&id=" + id
+            + "&year=" + year
+            + "&month=" + month
+        );
+    xhr.send();
+    xhr.responseType = "json";
+    xhr.onload = () => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            const data = xhr.response;
+            // dataはjsonのlist[dict]の形
+            return data;
+        } else {
+            alert(`Error: ${xhr.status}`);
+        }
+    };
+}
+
+function loadSchedulesFromSrv() {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    const data = srvGetSchedule(year, month);
+    for (let i = 0; i < data.length; i++) {
+        const date = `${year}-${month}-${data[i].day}`;
+        scheduleData[date] = {
+            title: data[i].title,
+            details: data[i].details,
+            budget: data[i].budget,
+        };
+    }
+}
+
+
 
 saveButton.addEventListener("click", saveSchedule);
 cancelButton.addEventListener("click", closeModal);
@@ -138,4 +268,8 @@ addButton.addEventListener("click", () => {
     openModal(selectedDate);
 });
 
+// loadSchedulesFromSrv(); // データベースからスケジュールを取得
 renderCalendar(currentDate);
+
+
+
