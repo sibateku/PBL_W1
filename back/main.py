@@ -139,6 +139,7 @@ def schedule_request():
         budget (str): 予算 (オプション)。
         spent (str): 支出 (オプション)。
         category (str): カテゴリ (オプション)。
+        details (str): 詳細 (オプション)。
     戻り値:
         dict: スケジュール情報または設定結果。
     """
@@ -198,6 +199,7 @@ def schedule_request():
         budget = str(request.args.get('budget')) # Optional
         spent = str(request.args.get('spent')) # Optional
         category = str(request.args.get('category')) # Optional
+        details = str(request.args.get('details')) # Optional
 
         print(f"year: {year}")
         print(f"month: {month}")
@@ -206,6 +208,7 @@ def schedule_request():
         print(f"budget: {budget}")
         print(f"spent: {spent}")
         print(f"category: {category}")
+        print(f"details: {details}")
 
         if year == "None" or year == '':
             return makeJson('year: Invalid year: empty')
@@ -254,8 +257,11 @@ def schedule_request():
             return makeJson('category: Invalid category: not decimal')
         if int(category) < 0:
             return makeJson('category: Invalid category: negative value')
+        
+        if details == "None" or details == '':
+            details = ""
 
-        return makeJson(schedule.add_data(user_id, year, month, day, title, budget, spent, category))
+        return makeJson(schedule.add_data(user_id, year, month, day, title, budget, spent, category, details))
 
     else:
         return makeJson('Invalid request')
