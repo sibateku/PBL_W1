@@ -92,6 +92,14 @@
                 return;
             }
             // ここでログイン処理を行う
+            // サーバー無しでも動くサンプル用
+            if (loginId === "sample" && loginPassword === "sample00") {
+                alert("ログイン成功(サンプル)")
+                location.href = './front/calendar.html?id=' + loginId;
+                return;
+            }
+
+            // サーバーで認証
             const xhr = new XMLHttpRequest();
             xhr.open("GET", url + "account?req=auth&id=" + loginId + "&password=" + loginPassword);
             xhr.send();
