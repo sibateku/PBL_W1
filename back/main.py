@@ -39,7 +39,7 @@ from flask import request
 app = Flask(__name__)
 
 # ローカルファイルで実行するためのアクセス制限撤廃用
-LOCALTEST = False
+LOCALTEST = True
 if LOCALTEST:
     from flask_cors import CORS
     CORS(app)
