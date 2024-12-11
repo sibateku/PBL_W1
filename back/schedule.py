@@ -3,6 +3,36 @@ import sqlite3
 
 account_db = "sql/account.db"
 
+def get_schedule_fromDay(account_id: str, year: int, month: int, day: int) -> list[dict]:
+    personal_data = f"sql/userdata/{account_id}.db"
+    try:
+        conn = sqlite3.connect(personal_data)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM schedules WHERE year = ? AND month = ? AND day = ?", (year, month, day))
+        schedules = cursor.fetchall()
+        for i in range(len(schedules)):
+            schedules[i] = {
+                "id": schedules[i][0],
+                "title": schedules[i][1],
+                "year": schedules[i][2],
+                "month": schedules[i][3],
+                "day": schedules[i][4],
+                "budget": schedules[i][5],
+                "spent": schedules[i][6],
+                "category": schedules[i][7]
+            }
+        out = {
+            "res": True,
+            "msg": f"Got daily schedules of {year}/{month}/{day} successfully.",
+            "data": schedules
+        }
+        return out
+    except Exception as e:
+        print(f"Error: {e}")
+        return []
+    finally:
+        conn.close()
+
 def get_schedule_between(account_id: str, year: int, month: int) -> list[dict]:
     personal_data = f"sql/userdata/{account_id}.db"
     try:
