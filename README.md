@@ -2,6 +2,10 @@
 カレンダー x 家計簿アプリ  
 PBL概論 水曜日 5限 W1  
 
+# サンプル(srv接続無し)
+ID: sample  
+PW: sample00  
+
 # 環境
 - バックエンド
   - python 3.9 以降
