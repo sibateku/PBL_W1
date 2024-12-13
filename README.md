@@ -2,6 +2,19 @@
 カレンダー x 家計簿アプリ  
 PBL概論 水曜日 5限 W1  
 
+# 環境
+- バックエンド
+  - python 3.9 以降
+  - flask
+  - flask-cors
+  - gunicorn
+- フロントエンド
+  - chrome
+
+# デプロイ先
+バックエンド -> [Render](https://pbl-w1.onrender.com/)  
+フロントエンド -> [GitHub Pages](https://sibateku.github.io/PBL_W1/)
+
 # システム構成図
 ![system.drawio](.github/system.png)
 
