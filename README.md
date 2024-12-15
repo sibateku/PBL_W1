@@ -22,6 +22,9 @@ PW: sample00
 # システム構成図
 ![system.drawio](.github/system.png)
 
+# Reference
+https://zenn.dev/yutasb/articles/cb5b58e1ab6de8
+
 # Flask HTTP requests (example)
 == Account ==  
 アカウント作成 (アカウントid, password指定)  
