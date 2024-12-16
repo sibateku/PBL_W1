@@ -67,6 +67,10 @@ function openModal(date) {
     selectedDate = date;
     dateDisplay.textContent = selectedDate || "選択してください";
     inputDate.value = selectedDate ? selectedDate : ""; // 日付を選択して表示
+    inputDate.addEventListener("change", (e) => {
+        selectedDate = e.target.value;
+        dateDisplay.textContent = selectedDate;
+    });
     modal.classList.add("active");
     overlay.classList.add("active");
 }
