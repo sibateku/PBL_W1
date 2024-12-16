@@ -79,7 +79,16 @@
     </div>
 
     <script>
-        const url = "http://127.0.0.1:5000/";
+        window.onload = function() {
+            if (location.protocol == "file:") {
+                ////// ローカルで実行
+                url = 'http://127.0.0.1:5000/';
+            } else {
+                ////// サーバ上で実行
+                url = 'https://pbl-w1.onrender.com/';
+            }
+        }
+
         function login() {
             const loginId = document.getElementById('login-id').value;
             const loginPassword = document.getElementById('login-password').value;

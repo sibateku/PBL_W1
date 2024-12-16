@@ -25,11 +25,8 @@ let currentDate = new Date();
 let selectedDate = null;
 const scheduleData = {};
 
-// **** ネット用の定数ここから ****
-const url = 'http://127.0.0.1:5000/';
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get('id');
-// **** 定数ここまで ****
 
 
 
@@ -178,6 +175,13 @@ addButton.addEventListener("click", () => {
     openModal(selectedDate);
 });
 
+if (location.protocol == "file:") {
+    ////// ローカルで実行
+    url = 'http://127.0.0.1:5000/';
+} else {
+    ////// サーバ上で実行
+    url = 'https://pbl-w1.onrender.com/';
+}
 try {
     srvGetSchedule(); // データベースからスケジュールを取得
 } catch (e) {
