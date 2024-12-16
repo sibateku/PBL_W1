@@ -1,1 +1,1 @@
-gunicorn -w 1 -b 0.0.0.0:5050 main:app
+gunicorn 127.0.0.1:5000 main:app
