@@ -17,6 +17,7 @@ PW: sample00
 
 # デプロイ先
 環境構築なしでサービスが使えます。  
+バックエンドのデプロイ先(Render)は無料プランの為、15分アクセスが無いとサーバーがダウンします(サーバーダウン後、アクセスには1分ほどかかります)。  
 バックエンド -> [Render](https://pbl-w1.onrender.com/)  
 フロントエンド -> [GitHub Pages](https://sibateku.github.io/PBL_W1/)
 
