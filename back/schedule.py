@@ -19,7 +19,8 @@ def get_schedule_fromDay(account_id: str, year: int, month: int, day: int) -> li
                 "day": schedules[i][4],
                 "budget": schedules[i][5],
                 "spent": schedules[i][6],
-                "category": schedules[i][7]
+                "category": schedules[i][7],
+                "details": schedules[i][8]
             }
         out = {
             "res": True,
@@ -49,7 +50,8 @@ def get_schedule_between(account_id: str, year: int, month: int) -> list[dict]:
                 "day": schedules[i][4],
                 "budget": schedules[i][5],
                 "spent": schedules[i][6],
-                "category": schedules[i][7]
+                "category": schedules[i][7],
+                "details": schedules[i][8]
             }
         out = {
             "res": True,
@@ -63,15 +65,15 @@ def get_schedule_between(account_id: str, year: int, month: int) -> list[dict]:
     finally:
         conn.close()
 
-def add_data(account_id: str, year: int, month: int, day: int, title: str, budget: int, spent: int, category: int) -> bool:
+def add_data(account_id: str, year: int, month: int, day: int, title: str, budget: int, spent: int, category: int, details: str) -> bool:
     personal_data = f"sql/userdata/{account_id}.db"
     try:
         conn = sqlite3.connect(personal_data)
         cursor = conn.cursor()
         cursor.execute("""
-            INSERT INTO schedules(year, month, day, title, budget, spent, category)
-            VALUES(?, ?, ?, ?, ?, ?, ?)
-            """, (year, month, day, title, budget, spent, category))
+            INSERT INTO schedules(year, month, day, title, budget, spent, category, details)
+            VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+            """, (year, month, day, title, budget, spent, category, details))
         conn.commit()
         print(f"Data added successfully.")
         return True
@@ -120,6 +122,6 @@ if __name__ == "__main__":
 
     from account import account_auth
     if account_auth(input_account_id, input_account_pw):
-        add_data(input_account_id, 2024, 11, 26, "作成", 100, 1)
-        add_data(input_account_id, 2024, 11, 27, "確認", 200, 1)
+        add_data(input_account_id, 2024, 11, 26, "作成", 100, 1, 0, "aaa")
+        add_data(input_account_id, 2024, 11, 27, "確認", 200, 1, 0, "bbb")
         list_personal_data(input_account_id)
