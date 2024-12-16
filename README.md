@@ -16,11 +16,23 @@ PW: sample00
   - chrome
 
 # デプロイ先
+環境構築なしでサービスが使えます。  
 バックエンド -> [Render](https://pbl-w1.onrender.com/)  
 フロントエンド -> [GitHub Pages](https://sibateku.github.io/PBL_W1/)
 
 # システム構成図
 ![system.drawio](.github/system.png)
+
+# 完成したもの
+1. アカウントログイン機能
+2. アカウント登録機能
+3. スケジュール表示機能
+4. スケジュール登録機能
+5. テンプレート機能(サーバー共有無し)
+
+# 完成していないもの
+1. スケジュール削除機能
+2. テンプレートのサーバー共有機能
 
 # Reference
 https://zenn.dev/yutasb/articles/cb5b58e1ab6de8
