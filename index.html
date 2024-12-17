@@ -89,6 +89,13 @@
             }
         }
 
+        function checkValid(text) {
+            // ID，パスワードの文字列チェック
+            // a-z, A-Z, 0-9, _ - . ! のみ許可
+            const reg = /^[a-zA-Z0-9_\-\.!]+$/;
+            return reg.test(text);
+        }
+
         function login() {
             const loginId = document.getElementById('login-id').value;
             const loginPassword = document.getElementById('login-password').value;
@@ -98,6 +105,14 @@
             }
             if (!loginPassword) {
                 alert('Passwordを入力してください');
+                return;
+            }
+            if (!checkValid(loginId)) {
+                alert('IDは半角英数字と記号(_ - . !)のみ使用できます');
+                return;
+            }
+            if (!checkValid(loginPassword)) {
+                alert('Passwordは半角英数字と記号(_ - . !)のみ使用できます');
                 return;
             }
             // ここでログイン処理を行う
@@ -140,6 +155,14 @@
             }
             if (!registerPassword) {
                 alert('Passwordを入力してください');
+                return;
+            }
+            if (!checkValid(registerId)) {
+                alert('IDは半角英数字と記号(_ - . !)のみ使用できます');
+                return;
+            }
+            if (!checkValid(registerPassword)) {
+                alert('Passwordは半角英数字と記号(_ - . !)のみ使用できます');
                 return;
             }
             // ここで登録処理を行う
