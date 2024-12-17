@@ -38,6 +38,12 @@ from flask import request
 
 app = Flask(__name__)
 
+# ローカルファイルで実行するためのアクセス制限撤廃用
+LOCALTEST = True
+if LOCALTEST:
+    from flask_cors import CORS
+    CORS(app)
+
 @app.route('/')
 def hello_world():
     print("hello_world")
