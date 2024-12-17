@@ -30,6 +30,16 @@ const id = urlParams.get('id');
 
 
 
+function graph() {
+    if (id === null) {
+        location.href = './graph.html';
+    }
+    else {
+        location.href = './graph.html?id=' + id;
+    }
+}
+
+
 function renderCalendar(date) {
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -145,6 +155,8 @@ cancelButton.addEventListener("click", closeModal);
 overlay.addEventListener("click", closeModal);
 closeViewButton.addEventListener("click", closeViewModal);
 deleteScheduleButton.addEventListener("click", deleteSchedule); // 削除ボタンにイベントリスナーを追加
+
+
 
 prevButton.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() - 1);

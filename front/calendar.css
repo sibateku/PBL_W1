@@ -27,6 +27,20 @@ body {
     margin-bottom: 30px;
 }
 
+/* Graph */
+.form-group button {
+    width: 100px;
+    padding: 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.form-group button:hover {
+    background-color: #0056b3;
+}
+
 .navigation button {
     padding: 15px 30px;
     font-size: 18px;
