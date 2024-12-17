@@ -136,14 +136,14 @@
                         location.href = './front/calendar.html?id=' + loginId; // Typo: calendar -> calender
                     }
                     else {
-                        alert('ログイン失敗');
+                        alert('ログイン失敗\n' + data.msg);
                     }
                 } else {
                     alert(`Error: ${xhr.status}`);
                 }
             };
 
-            alert(`Login ID: ${loginId}\nLogin Password: ${loginPassword}`);
+            // alert(`Login ID: ${loginId}\nLogin Password: ${loginPassword}`);
         }
 
         function register() {
@@ -177,14 +177,14 @@
                         alert('登録完了');
                     }
                     else {
-                        alert('登録失敗');
+                        alert('登録失敗\n' + data.msg);
                     }
                 } else {
                     alert(`Error: ${xhr.status}`);
                 }
             };
 
-            alert(`Register ID: ${registerId}\nRegister Password: ${registerPassword}`);
+            // alert(`Register ID: ${registerId}\nRegister Password: ${registerPassword}`);
         }
     </script>
 </body>
