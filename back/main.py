@@ -62,18 +62,20 @@ def makeJson(data) -> str:
         str: json形式の文字列
     """
     if type(data) == dict:
-        return json.dumps(data, indent=2, ensure_ascii=False)
+        pass
     elif type(data) == list:
         if len(list) == 0:
             return makeJson('makeJson: Empty list')
-        return json.dumps(data, indent=2, ensure_ascii=False)
     elif type(data) == str:
-        data = {"res": data}
-        return json.dumps(data, indent=2, ensure_ascii=False)
+        data = {"res": False, "msg": data, "data": ""}
     elif type(data) == bool:
-        data = {"res": data}
-        return json.dumps(data, indent=2, ensure_ascii=False)
-    return makeJson('makeJson: Invalid data type')
+        if data:
+            data = {"res": True, "msg": "OK", "data": ""}
+        else:
+            data = {"res": False, "msg": "NG", "data": ""}
+    else:
+        return makeJson('makeJson: Invalid data type')
+    return json.dumps(data, indent=2, ensure_ascii=False)
 
 
 
