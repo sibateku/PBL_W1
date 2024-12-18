@@ -28,7 +28,8 @@ const scheduleData = {};
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get('id');
 
-
+const templateButton = document.getElementById('template-button');
+const templateEditing = document.getElementById('template-editing');
 
 function graph() {
     if (id === null) {
@@ -37,6 +38,30 @@ function graph() {
     else {
         location.href = './graph.html?id=' + id;
     }
+}
+
+function template() {
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .template-editing {
+            display: flex;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+function buttonCloseEditTemplate() {
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .template-editing {
+            display: none;
+        }
+    `;
+    // テンプレート編集画面の要素をクリアする
+    editTemplateSelect.value = "";
+    templateDetails.value = "";
+    templateBudget.value = "";
+    document.head.appendChild(style);
 }
 
 
@@ -203,13 +228,13 @@ try {
 renderCalendar(currentDate);
 
 const templateSelect = document.getElementById("template-select");
+const editTemplateSelect = document.getElementById("edit-template-select");
 const templateTitle = document.getElementById("edit-template-title");
 const templateDetails = document.getElementById("edit-template-details");
 const templateBudget = document.getElementById("edit-template-budget");
 const saveTemplateButton = document.getElementById("save-template-button");
 
-// テンプレートのデータ
-const templates = {
+var templates = {
     work: {
         title: "仕事",
         details: "仕事の予定です",
@@ -233,9 +258,9 @@ templateSelect.addEventListener("change", (e) => {
 
     if (selectedTemplate && templates[selectedTemplate]) {
         // テンプレートに基づいたデータを編集フォームに表示
-        templateTitle.value = templates[selectedTemplate].title;
-        templateDetails.value = templates[selectedTemplate].details;
-        templateBudget.value = templates[selectedTemplate].budget;
+        scheduleTitle.value = templates[selectedTemplate].title;
+        scheduleDetails.value = templates[selectedTemplate].details;
+        scheduleBudget.value = templates[selectedTemplate].budget;
     } else {
         // テンプレートを選択しなかった場合はフォームを空にする
         templateTitle.value = "";
@@ -244,14 +269,31 @@ templateSelect.addEventListener("change", (e) => {
     }
 });
 
+// テンプレート編集後に選択肢を更新
+editTemplateSelect.addEventListener("change", (e) => {
+    const selectedTemplate = e.target.value;
+
+    if (selectedTemplate && templates[selectedTemplate]) {
+        // テンプレートに基づいたデータを編集フォームに表示
+        //templateTitle.value = selectedTemplate;
+        templateDetails.value = templates[selectedTemplate].details;
+        templateBudget.value = templates[selectedTemplate].budget;
+    } else {
+        // テンプレートを選択しなかった場合はフォームを空にする
+        //templateTitle.value = "";
+        templateDetails.value = "";
+        templateBudget.value = "";
+    }
+});
+
 // テンプレートを保存する処理
 saveTemplateButton.addEventListener("click", () => {
-    const selectedTemplate = templateSelect.value;
+    const selectedTemplate = editTemplateSelect.value;
 
     if (selectedTemplate) {
         // ユーザーが編集した内容でテンプレートを更新
         templates[selectedTemplate] = {
-            title: templateTitle.value.trim(),
+            // title: templateTitle.value.trim(),
             details: templateDetails.value.trim(),
             budget: templateBudget.value.trim(),
         };
@@ -259,10 +301,10 @@ saveTemplateButton.addEventListener("click", () => {
         alert(`${selectedTemplate} テンプレートが保存されました！`);
 
         // 編集内容を反映させた後、再度テンプレート選択を空にしておく
-        templateSelect.value = "";
-        templateTitle.value = "";
-        templateDetails.value = "";
-        templateBudget.value = "";
+        // templateSelect.value = "";
+        // templateTitle.value = "";
+        // templateDetails.value = "";
+        // templateBudget.value = "";
     } else {
         alert("テンプレートを選択してください");
     }

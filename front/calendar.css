@@ -63,6 +63,50 @@ body {
     gap: 15px;
 }
 
+/* template-editing */
+.template-editing {
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.template-editing select, textarea, input {
+    width: auto;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.save-template-button {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.template-editing button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background: #45a049;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.template-editing button:hover {
+    background-color: #007bff;
+}
+
 .days div {
     font-size: 20px;
     font-weight: bold;
