@@ -3,7 +3,7 @@ import sqlite3
 # ユーザーデータの位置
 userdata_db = "sql/userdata/"
 
-def set_template(account_id: str, template_name: str) -> bool:
+def set_template(account_id: str, template_name: str, template_budget: int) -> bool:
     """
     指定されたSQLiteデータベースにテンプレートを追加します。
     Args:
@@ -15,7 +15,7 @@ def set_template(account_id: str, template_name: str) -> bool:
     try:
         conn = sqlite3.connect(f"{userdata_db}{account_id}.db")
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO templates(title) VALUES(?)", (template_name,))
+        cursor.execute("INSERT INTO templates(title, budget) VALUES(?, ?)", (template_name, template_budget))
         conn.commit()
         return True
     except Exception as e:
@@ -62,6 +62,12 @@ def get_templates(account_id: str) -> list:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM templates")
         templates = cursor.fetchall()
+        for i in range(len(templates)):
+            templates[i] = {
+                "id": templates[i][0],
+                "title": templates[i][1],
+                "budget": templates[i][2]
+            }
         return templates
     except Exception as e:
         print(f"Error: {e}")
@@ -71,22 +77,27 @@ def get_templates(account_id: str) -> list:
 
 
 
-def get_template_fromId(account_id: str, template_id: int) -> str:
+def get_template_fromId(account_id: str, template_id: int) -> dict:
     """
     指定されたSQLiteデータベースからテンプレートを取得します。
     Args:
         account_id (str): アカウントID。
         template_id (int): テンプレートID。
     Returns:
-        str: テンプレートの名前
+        dict: テンプレートの情報
     """
     try:
         conn = sqlite3.connect(f"{userdata_db}{account_id}.db")
         cursor = conn.cursor()
-        cursor.execute("SELECT name FROM templates WHERE id = ?", (template_id,))
+        cursor.execute("SELECT * FROM templates WHERE id = ?", (template_id,))
         template = cursor.fetchone()
         if template:
-            return template[0]
+            template = {
+                "id": template[0],
+                "title": template[1],
+                "budget": template[2]
+            }
+            return template
     except Exception as e:
         print(f"Error: {e}")
         return None
@@ -95,17 +106,22 @@ def get_template_fromId(account_id: str, template_id: int) -> str:
 
 
 
-def get_template_fromName(account_id: str, template_name: str) -> int:
+def get_template_fromName(account_id: str, template_name: str) -> dict:
     """
     名前からテンプレートのIDを取得
     """
     try:
         conn = sqlite3.connect(f"{userdata_db}{account_id}.db")
         cursor = conn.cursor()
-        cursor.execute("SELECT id FROM templates WHERE title = ?", (template_name,))
+        cursor.execute("SELECT * FROM templates WHERE title = ?", (template_name,))
         template = cursor.fetchone()
         if template:
-            return template[0]
+            template = {
+                "id": template[0],
+                "title": template[1],
+                "budget": template[2]
+            }
+            return template
     except Exception as e:
         print(f"Error: {e}")
         return None
@@ -118,6 +134,7 @@ if __name__ == "__main__":
     # テスト
     account_id = "taro"
     template_name = "test_template"
-    print(set_template(account_id, template_name))
+    template_budget = 10000
+    print(set_template(account_id, template_name, template_budget))
     print(get_templates(account_id))
     print(get_template_fromId(account_id, 1))
