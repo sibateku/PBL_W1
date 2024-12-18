@@ -66,6 +66,7 @@ def makeJson(data) -> str:
     elif type(data) == list:
         if len(data) == 0:
             return makeJson('makeJson: Empty list')
+        data = {"res": True, "msg": "OK", "data": data}
     elif type(data) == str:
         data = {"res": False, "msg": data, "data": ""}
     elif type(data) == bool:
