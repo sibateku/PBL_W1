@@ -342,6 +342,8 @@ def template_request():
         if not budget.isdecimal():
             return makeJson('budget: Invalid budget: not decimal')
         return makeJson(template.set_template(user_id, title, budget))
+    elif req == 'deleteall':
+        return makeJson(template.delete_template_all(user_id))
     else:
         return makeJson('Invalid request')
 

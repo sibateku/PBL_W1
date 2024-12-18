@@ -49,6 +49,28 @@ def delete_template(account_id: str, template_id: int) -> bool:
 
 
 
+def delete_template_all(account_id: str) -> bool:
+    """
+    指定されたSQLiteデータベースから全てのテンプレートを削除します。
+    Args:
+        account_id (str): アカウントID。
+    Returns:
+        bool: テンプレートの削除に成功した場合はTrue、失敗した場合はFalseを返します。
+    """
+    try:
+        conn = sqlite3.connect(f"{userdata_db}{account_id}.db")
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM templates")
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+    finally:
+        conn.close()
+
+
+
 def get_templates(account_id: str) -> list:
     """
     指定されたSQLiteデータベースからユーザーのテンプレートを取得します。
