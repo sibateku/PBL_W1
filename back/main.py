@@ -64,7 +64,7 @@ def makeJson(data) -> str:
     if type(data) == dict:
         pass
     elif type(data) == list:
-        if len(list) == 0:
+        if len(data) == 0:
             return makeJson('makeJson: Empty list')
     elif type(data) == str:
         data = {"res": False, "msg": data, "data": ""}
